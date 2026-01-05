@@ -1,0 +1,367 @@
+
+> atlas@0.1.0 dev
+> next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/shubhendurawat/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/shubhendurawat/Desktop/atlas/package-lock.json
+
+   ▲ Next.js 15.5.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.33:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     ✓ optimizeCss
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 1791ms
+ ○ Compiling /api/auth/google ...
+ ✓ Compiled /api/auth/google in 1385ms (505 modules)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /api/auth/google 307 in 1749ms
+ ✓ Compiled /api/auth/me in 239ms (507 modules)
+ GET /api/auth/me 401 in 280ms
+ ✓ Compiled in 230ms (313 modules)
+ ○ Compiling /signup ...
+ ✓ Compiled /signup in 3.6s (5052 modules)
+ GET /signup 200 in 4207ms
+ ✓ Compiled /dashboard in 494ms (2813 modules)
+ ✓ Compiled in 904ms (2522 modules)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /api/auth/google 307 in 1712ms
+ GET /dashboard 200 in 1780ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 977ms (5411 modules)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /login 200 in 1144ms
+ GET /login 200 in 19ms
+✅ MongoDB Connected
+MongoDB connected successfully for Google OAuth
+ GET /api/auth/google?code=4%2F0AVMBsJghNT2h2-Wqd59r8B-y097Ck-PHsHNRw1pk8wP3AQK8Dg1mIbhEhc-LOf1T3p5Y9Q&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none 307 in 1864ms
+ ○ Compiling /auth/callback ...
+ ✓ Compiled /auth/callback in 549ms (5418 modules)
+ GET /auth/callback 200 in 725ms
+ ✓ Compiled /api/auth/me in 478ms (2890 modules)
+ GET /api/auth/me 200 in 643ms
+ GET /dashboard 200 in 28ms
+ ○ Compiling /api/auth/signout ...
+ ✓ Compiled /api/auth/signout in 548ms (5422 modules)
+ POST /api/auth/signout 200 in 594ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1046ms (5435 modules)
+ GET / 200 in 1107ms
+ GET /login 200 in 47ms
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /api/auth/google 307 in 120ms
+MongoDB connected successfully for Google OAuth
+ GET /api/auth/google?code=4%2F0AVMBsJj8ixXvtrm3d2qU3ER9X9MKUcH2DLQMBv36bFMnN0A8nA7gsiIzoUrK6V7uyCECGw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none 307 in 492ms
+ GET /auth/callback 200 in 175ms
+ GET /api/auth/me 200 in 51ms
+ GET /dashboard 200 in 40ms
+ POST /api/auth/signout 200 in 32ms
+ GET / 200 in 28ms
+ GET /signup 200 in 57ms
+ GET /api/auth/google 307 in 52ms
+ GET /dashboard 200 in 27ms
+ GET /login 200 in 48ms
+ GET /login 200 in 26ms
+MongoDB connected successfully for Google OAuth
+ GET /api/auth/google?code=4%2F0AVMBsJhAGSfOrB-lYmwpQ1Y2ujUOIBNs8g_YqQkmDtxLvy83LfBuuL4r8mUDiYva5-Au9A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none 307 in 316ms
+ GET /auth/callback 200 in 69ms
+ GET /api/auth/me 200 in 35ms
+ GET /dashboard 200 in 25ms
+ POST /api/auth/signout 200 in 114ms
+ GET / 200 in 34ms
+ GET /login 200 in 64ms
+ ○ Compiling /api/auth/signin ...
+ ✓ Compiled /api/auth/signin in 1105ms (5440 modules)
+Attempting MongoDB connection for signin...
+MongoDB connected successfully for signin
+ POST /api/auth/signin 200 in 2154ms
+ GET /dashboard 200 in 63ms
+ POST /api/auth/signout 200 in 37ms
+ GET / 200 in 51ms
+ ✓ Compiled in 2.7s (5194 modules)
+ ✓ Compiled in 1019ms (5208 modules)
+ GET / 200 in 161ms
+ ✓ Compiled in 885ms (5208 modules)
+ GET / 200 in 99ms
+ ✓ Compiled in 981ms (5208 modules)
+ GET / 200 in 51ms
+ GET /login 200 in 79ms
+ ○ Compiling /api/auth/google ...
+ ✓ Compiled /api/auth/google in 1141ms (2884 modules)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /api/auth/google 307 in 1343ms
+MongoDB connected successfully for Google OAuth
+ GET /api/auth/google?code=4%2F0AVMBsJh76bqXAq99Pm7JwTS1JvvUWsS-bKB1LqlYwZVDtxOSK90EFn5ZsWoBFljEuTqC9A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none 307 in 533ms
+ ○ Compiling /auth/callback ...
+ ✓ Compiled /auth/callback in 663ms (2889 modules)
+ GET /login 200 in 226ms
+ GET /auth/callback 200 in 945ms
+ ✓ Compiled /api/auth/me in 394ms (2891 modules)
+ GET /api/auth/me 200 in 482ms
+ GET /dashboard 200 in 57ms
+ ✓ Compiled in 4.7s (5204 modules)
+ ✓ Compiled in 697ms (5218 modules)
+ GET /dashboard 200 in 281ms
+ ✓ Compiled in 1495ms (5204 modules)
+ ✓ Compiled in 907ms (5218 modules)
+ GET /dashboard 200 in 67ms
+ ✓ Compiled in 668ms (5218 modules)
+ GET /dashboard 200 in 79ms
+ ✓ Compiled in 737ms (5204 modules)
+ ✓ Compiled in 745ms (5204 modules)
+ ✓ Compiled in 337ms (5204 modules)
+ ✓ Compiled in 1617ms (5218 modules)
+ GET /dashboard 200 in 55ms
+ ✓ Compiled in 1300ms (5204 modules)
+ ✓ Compiled in 845ms (5218 modules)
+ GET /dashboard 200 in 87ms
+ ○ Compiling /api/auth/signout ...
+ ✓ Compiled /api/auth/signout in 1155ms (2683 modules)
+ POST /api/auth/signout 200 in 1312ms
+ GET / 200 in 151ms
+ GET / 200 in 941ms
+ GET /login 200 in 114ms
+ ○ Compiling /api/auth/signin ...
+ ✓ Compiled /api/auth/signin in 1303ms (2764 modules)
+Attempting MongoDB connection for signin...
+MongoDB connection error in signin: {
+  message: 'querySrv ECONNREFUSED _mongodb._tcp.cluster0.yh9vaox.mongodb.net',
+  code: 'ECONNREFUSED',
+  name: 'Error'
+}
+Using fallback signin (no database connection)
+ POST /api/auth/signin 200 in 1393ms
+ GET /dashboard 200 in 129ms
+ ✓ Compiled in 2.4s (5218 modules)
+ GET /dashboard 200 in 310ms
+ ✓ Compiled in 17.4s (5218 modules)
+ GET /dashboard 200 in 157ms
+ ✓ Compiled in 687ms (5218 modules)
+ GET /dashboard 200 in 275ms
+ ✓ Compiled in 623ms (5218 modules)
+ GET /dashboard 200 in 46ms
+ ✓ Compiled in 737ms (5218 modules)
+ GET /dashboard 200 in 65ms
+ ✓ Compiled in 604ms (5218 modules)
+ GET /dashboard 200 in 51ms
+ ✓ Compiled in 548ms (5218 modules)
+ GET /dashboard 200 in 61ms
+ ✓ Compiled in 3.1s (5218 modules)
+ GET /dashboard 200 in 63ms
+ GET /dashboard 200 in 502ms
+ ○ Compiling /api/auth/signout ...
+ ✓ Compiled /api/auth/signout in 1350ms (2683 modules)
+ POST /api/auth/signout 200 in 1465ms
+ GET / 200 in 109ms
+ GET /login 200 in 110ms
+ ○ Compiling /api/auth/signin ...
+ ✓ Compiled /api/auth/signin in 706ms (2766 modules)
+Attempting MongoDB connection for signin...
+MongoDB connected successfully for signin
+ POST /api/auth/signin 200 in 1667ms
+ GET /dashboard 200 in 72ms
+ ✓ Compiled in 2.9s (5204 modules)
+ ✓ Compiled in 713ms (5204 modules)
+ ✓ Compiled in 1345ms (5204 modules)
+ ✓ Compiled in 422ms (5204 modules)
+ ✓ Compiled in 1587ms (5218 modules)
+ GET /dashboard 200 in 235ms
+ ✓ Compiled in 1381ms (5218 modules)
+ GET /dashboard 200 in 114ms
+ ✓ Compiled in 3.6s (5204 modules)
+ ✓ Compiled in 540ms (5204 modules)
+ ✓ Compiled in 1584ms (5218 modules)
+ GET /dashboard 200 in 91ms
+ ✓ Compiled in 1989ms (5218 modules)
+ GET /dashboard 200 in 80ms
+ GET /dashboard 200 in 882ms
+ ✓ Compiled in 3.4s (5204 modules)
+ ✓ Compiled in 1287ms (5218 modules)
+ GET /dashboard 200 in 190ms
+ ✓ Compiled in 896ms (5204 modules)
+ ✓ Compiled in 971ms (5218 modules)
+ GET /dashboard 200 in 183ms
+ ✓ Compiled in 588ms (5218 modules)
+ GET /dashboard 200 in 58ms
+ ✓ Compiled in 499ms (5218 modules)
+ GET /dashboard 200 in 61ms
+ ✓ Compiled in 985ms (5218 modules)
+ GET /dashboard 200 in 102ms
+ ✓ Compiled in 607ms (5218 modules)
+ GET /dashboard 200 in 45ms
+ GET /dashboard 200 in 2894ms
+ ✓ Compiled in 4.1s (5218 modules)
+ ✓ Compiled in 1199ms (5218 modules)
+ GET /dashboard 200 in 85ms
+ ✓ Compiled in 680ms (5218 modules)
+ GET /dashboard 200 in 67ms
+ ✓ Compiled in 498ms (5218 modules)
+ GET /dashboard 200 in 56ms
+ ✓ Compiled in 522ms (5218 modules)
+ GET /dashboard 200 in 57ms
+ ✓ Compiled in 563ms (5218 modules)
+ GET /dashboard 200 in 63ms
+ ✓ Compiled in 1110ms (5218 modules)
+ GET /dashboard 200 in 63ms
+ ✓ Compiled in 714ms (5218 modules)
+ GET /dashboard 200 in 97ms
+ ✓ Compiled in 1051ms (5218 modules)
+ GET /dashboard 200 in 164ms
+ ✓ Compiled in 1630ms (5218 modules)
+ GET /dashboard 200 in 69ms
+ GET /dashboard 200 in 517ms
+ ✓ Compiled in 2.4s (5204 modules)
+ ✓ Compiled in 740ms (5204 modules)
+ ✓ Compiled in 878ms (5218 modules)
+ GET /dashboard 200 in 91ms
+ ✓ Compiled in 2.6s (5204 modules)
+ ✓ Compiled in 1123ms (5204 modules)
+ ✓ Compiled in 948ms (5218 modules)
+ GET /dashboard 200 in 112ms
+ ✓ Compiled in 650ms (5218 modules)
+ GET /dashboard 200 in 491ms
+ GET /dashboard 200 in 473ms
+ ○ Compiling /api/auth/signout ...
+ ✓ Compiled /api/auth/signout in 1210ms (2683 modules)
+ POST /api/auth/signout 200 in 1343ms
+ POST /api/auth/signout 200 in 8ms
+ GET / 200 in 86ms
+ GET / 200 in 19ms
+ GET / 200 in 325ms
+ GET /login 200 in 103ms
+ ○ Compiling /api/auth/google ...
+ ✓ Compiled /api/auth/google in 762ms (2891 modules)
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"email":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:46345) [MONGOOSE] Warning: Duplicate schema index on {"googleId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+ GET /api/auth/google 307 in 877ms
+MongoDB connected successfully for Google OAuth
+ GET /api/auth/google?code=4%2F0AVMBsJhrqNro5fClg0gFMWqzcgd6DzMj_4DLy1X9mP_yWC1nORI9FurXY5M5-bYf1aIjlQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none 307 in 827ms
+ ○ Compiling /auth/callback ...
+ ✓ Compiled /auth/callback in 546ms (2896 modules)
+ GET /login 200 in 376ms
+ GET /auth/callback 200 in 944ms
+ ✓ Compiled /api/auth/me in 364ms (2898 modules)
+ GET /api/auth/me 200 in 410ms
+ GET /dashboard 200 in 72ms
+ ✓ Compiled in 1897ms (5452 modules)
+ GET /dashboard 200 in 120ms
+ ✓ Compiled in 660ms (5218 modules)
+ GET /dashboard 200 in 200ms
+ ✓ Compiled in 1253ms (5218 modules)
+ GET /dashboard 200 in 83ms
+ ✓ Compiled in 593ms (5218 modules)
+ GET /dashboard 200 in 55ms
+ ✓ Compiled in 1667ms (5218 modules)
+ GET /dashboard 200 in 234ms
+ ✓ Compiled in 1651ms (5218 modules)
+ GET /dashboard 200 in 101ms
+ ✓ Compiled in 777ms (5218 modules)
+ GET /dashboard 200 in 54ms
+ ✓ Compiled in 692ms (5218 modules)
+ GET /dashboard 200 in 70ms
+ GET /dashboard 200 in 452ms
+ ✓ Compiled in 590ms (5218 modules)
+ GET /dashboard 200 in 68ms
+ ✓ Compiled in 856ms (5218 modules)
+ GET /dashboard 200 in 78ms
+ ✓ Compiled in 654ms (5218 modules)
+ GET /dashboard 200 in 73ms
+ ✓ Compiled in 992ms (5218 modules)
+ GET /dashboard 200 in 149ms
+ GET /dashboard 200 in 598ms
+ ✓ Compiled in 1864ms (5218 modules)
+ GET /dashboard 200 in 93ms
+ ✓ Compiled in 777ms (5218 modules)
+ GET /dashboard 200 in 119ms
+ ✓ Compiled in 514ms (5218 modules)
+ GET /dashboard 200 in 88ms
+ ✓ Compiled in 507ms (5218 modules)
+ GET /dashboard 200 in 52ms
+ ✓ Compiled in 522ms (5218 modules)
+ GET /dashboard 200 in 56ms
+ ✓ Compiled in 592ms (5218 modules)
+ GET /dashboard 200 in 64ms
+ ✓ Compiled in 509ms (5218 modules)
+ GET /dashboard 200 in 64ms
+ ✓ Compiled in 512ms (5218 modules)
+ GET /dashboard 200 in 63ms
+ GET /dashboard 200 in 696ms
+ ✓ Compiled in 737ms (5218 modules)
+ ✓ Compiled in 591ms (5218 modules)
+ GET /dashboard 200 in 139ms
+ GET /dashboard 200 in 266ms
+ ✓ Compiled in 553ms (5218 modules)
+ GET /dashboard 200 in 320ms
+ ✓ Compiled in 621ms (5218 modules)
+ GET /dashboard 200 in 50ms
+ ✓ Compiled in 607ms (5218 modules)
+ GET /dashboard 200 in 60ms
+ ✓ Compiled in 1240ms (5218 modules)
+ GET /dashboard 200 in 63ms
+ ✓ Compiled in 832ms (5218 modules)
+ GET /dashboard 200 in 319ms
+ ✓ Compiled in 950ms (5218 modules)
+ GET /dashboard 200 in 75ms
+ GET /dashboard 200 in 220ms
+ ✓ Compiled in 626ms (5218 modules)
+ GET /dashboard 200 in 70ms
+ ✓ Compiled in 536ms (5218 modules)
+ GET /dashboard 200 in 59ms
+ ✓ Compiled in 1091ms (5218 modules)
+ GET /dashboard 200 in 41ms
+ ✓ Compiled in 540ms (5218 modules)
+ GET /dashboard 200 in 73ms
+ GET /dashboard 200 in 232ms
+ ✓ Compiled in 832ms (5218 modules)
+ GET /dashboard 200 in 365ms
+ ✓ Compiled in 3.2s (5218 modules)
+ GET /dashboard 200 in 171ms
+ GET /dashboard 200 in 989ms
+ ✓ Compiled in 872ms (5218 modules)
+ GET /dashboard 200 in 71ms
+ ✓ Compiled in 581ms (5218 modules)
+ GET /dashboard 200 in 72ms
+ ✓ Compiled in 549ms (5218 modules)
+ GET /dashboard 200 in 59ms
+ ✓ Compiled in 588ms (5218 modules)
+ GET /dashboard 200 in 62ms
+ ✓ Compiled in 1365ms (5218 modules)
+ GET /dashboard 200 in 58ms
+ GET /dashboard 200 in 219ms
+ ✓ Compiled in 599ms (5218 modules)
+ GET /dashboard 200 in 155ms
+ ✓ Compiled in 1367ms (5218 modules)
+ GET /dashboard 200 in 50ms
+ ✓ Compiled in 634ms (5218 modules)
+ GET /dashboard 200 in 69ms
+ GET /dashboard 200 in 206ms
+ ✓ Compiled in 696ms (5218 modules)
+ GET /dashboard 200 in 663ms
+ ✓ Compiled in 634ms (5218 modules)
+ GET /dashboard 200 in 77ms
+ ✓ Compiled in 607ms (5218 modules)
+ GET /dashboard 200 in 59ms
+ ✓ Compiled in 1304ms (5218 modules)
+ GET /dashboard 200 in 96ms
+ ✓ Compiled in 510ms (5218 modules)
+ GET /dashboard 200 in 56ms
+ ✓ Compiled in 813ms (5218 modules)
+ GET /dashboard 200 in 61ms
+ GET /dashboard 200 in 426ms
+ ✓ Compiled in 790ms (5218 modules)
+ GET /dashboard 200 in 65ms
+ GET /dashboard 200 in 369ms
+ ✓ Compiled in 1121ms (5218 modules)
