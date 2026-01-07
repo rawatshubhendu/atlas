@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  # Don't set publish directory - @netlify/plugin-nextjs handles this automatically
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -10,3 +10,11 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Clear cache on every build to ensure fresh deployments
+[build.processing]
+  skip_processing = false
+
+# Force rebuild without cache
+[build]
+  ignore = "node_modules"
