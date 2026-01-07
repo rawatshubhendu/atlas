@@ -26,10 +26,47 @@ export async function PUT(req) {
       return NextResponse.json({ success: false, message: 'Invalid current email format' }, { status: 400 });
     }
 
-    const user = await User.findOne({ email: normalizedCurrentEmail });
+    console.log('Looking for user with email:', normalizedCurrentEmail);
+
+    // Multiple lookup strategies for robustness
+    let user = null;
+    
+    // Strategy 1: Exact match (case-insensitive)
+    user = await User.findOne({ email: new RegExp(`^${normalizedCurrentEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') });
+    
+    // Strategy 2: Try with trimmed email
     if (!user) {
-      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+      const trimmedEmail = normalizedCurrentEmail.trim();
+      user = await User.findOne({ email: new RegExp(`^${trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') });
     }
+    
+    // Strategy 3: Try exact match without normalization (in case email wasn't normalized in DB)
+    if (!user) {
+      user = await User.findOne({ email: currentEmail });
+    }
+    
+    // Strategy 4: Try with original email (case-sensitive exact match)
+    if (!user) {
+      user = await User.findOne({ email: currentEmail.trim() });
+    }
+
+    if (!user) {
+      console.error('User not found for email:', normalizedCurrentEmail);
+      console.error('Original email provided:', currentEmail);
+      
+      // Don't expose database contents in production
+      if (process.env.NODE_ENV === 'development') {
+        const sampleUsers = await User.find({}, { email: 1, name: 1 }).limit(5);
+        console.log('Sample users in DB:', sampleUsers.map(u => ({ email: u.email, name: u.name })));
+      }
+      
+      return NextResponse.json({ 
+        success: false, 
+        message: 'User not found. Please check your email address.' 
+      }, { status: 404 });
+    }
+
+    console.log('Found user:', { email: user.email, name: user.name });
 
     let hasChanges = false;
 

@@ -54,8 +54,11 @@ const NavBar = () => {
   };
 
   const isActive = (path) => pathname === path;
+  const isDashboard = pathname === '/dashboard' || pathname?.startsWith('/dashboard');
 
   if (!isMounted) {
+    // Don't render placeholder on dashboard
+    if (isDashboard) return null;
     return (
       <div
         className="navbar-placeholder"
@@ -64,9 +67,14 @@ const NavBar = () => {
     );
   }
 
+  // CRITICAL: Don't render ANY navbar components on dashboard pages
+  if (isDashboard) {
+    return null;
+  }
+
   return (
     <>
-      {/* Mobile Header */}
+      {/* Mobile Header - Only render on mobile devices */}
       <div className="mobile-header">
         <button
           className="mobile-menu-button"

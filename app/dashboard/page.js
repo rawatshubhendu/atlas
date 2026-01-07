@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const [isMobile, setIsMobile] = useState(false); // show mobile button only on mobile
   
   const router = useRouter();
 
@@ -51,6 +52,69 @@ export default function Dashboard() {
     setUser(currentUser);
   }, [router]);
 
+  // Hide desktop navbar and mobile header on dashboard page - AGGRESSIVE
+  useEffect(() => {
+    const hideNavbarElements = () => {
+      // Hide desktop navbar
+      const navbar = document.querySelector('.glass-navbar');
+      if (navbar) {
+        navbar.style.display = 'none';
+        navbar.style.visibility = 'hidden';
+        navbar.style.opacity = '0';
+        navbar.style.pointerEvents = 'none';
+      }
+      
+      // Hide mobile header
+      const mobileHeader = document.querySelector('.mobile-header');
+      if (mobileHeader) {
+        mobileHeader.style.display = 'none';
+        mobileHeader.style.visibility = 'hidden';
+        mobileHeader.style.opacity = '0';
+        mobileHeader.style.pointerEvents = 'none';
+      }
+      
+      // Hide mobile menu button
+      const mobileMenuBtn = document.querySelector('.mobile-menu-button');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.style.display = 'none';
+        mobileMenuBtn.style.visibility = 'hidden';
+      }
+    };
+    
+    // Hide immediately
+    hideNavbarElements();
+    
+    // Also hide after a short delay to catch any late-rendering elements
+    const timeoutId = setTimeout(hideNavbarElements, 100);
+    
+    // Use MutationObserver to catch dynamically added navbar elements
+    const observer = new MutationObserver(hideNavbarElements);
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+      // Restore navbar when leaving dashboard
+      const navbar = document.querySelector('.glass-navbar');
+      if (navbar) {
+        navbar.style.display = '';
+        navbar.style.visibility = '';
+        navbar.style.opacity = '';
+        navbar.style.pointerEvents = '';
+      }
+    };
+  }, []);
+
+  // Track viewport to conditionally render mobile toggle button
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 768px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
   // Ensure posts refresh when user becomes available
   useEffect(() => {
     if (currentView === 'posts' && user?.email) {
@@ -62,17 +126,27 @@ export default function Dashboard() {
   const authorKey = user?.email; // stable across sessions
   const authorDisplayName = user?.name;
 
-  const fetchPosts = async (search = "") => {
+  const fetchPosts = async (search = "", forceRefresh = false) => {
     if (!authorKey) return; // guard until user is ready
     try {
       setLoading(true);
-      const url = `/api/posts?status=published&search=${encodeURIComponent(search)}&authorId=${encodeURIComponent(authorKey)}${authorDisplayName ? `&authorName=${encodeURIComponent(authorDisplayName)}` : ''}`;
-      const res = await fetch(url);
+      // Add cache-busting timestamp to ensure fresh data
+      const cacheBuster = forceRefresh ? `&_t=${Date.now()}` : '';
+      const url = `/api/posts?status=published&search=${encodeURIComponent(search)}&authorId=${encodeURIComponent(authorKey)}${authorDisplayName ? `&authorName=${encodeURIComponent(authorDisplayName)}` : ''}${cacheBuster}`;
+      const res = await fetch(url, {
+        method: 'GET',
+        cache: 'no-store', // Ensure we don't use cached data
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || "Failed to load posts");
+      // Always update posts state, even if it's an empty array
       setPosts(data.posts || []);
     } catch (e) {
-      console.error(e);
+      console.error('Error fetching posts:', e);
+      message.error('Failed to refresh posts');
     } finally {
       setLoading(false);
     }
@@ -134,28 +208,30 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* Mobile Menu Button for Dashboard */}
-      <button
-        className="dashboard-mobile-menu-btn"
-        onClick={() => {
-          // Toggle mobile sidebar
-          const sidebar = document.querySelector('.exotic-sidebar');
-          const main = document.querySelector('.dashboard-main');
-          if (sidebar && main) {
-            const isOpen = sidebar.classList.contains('mobile-open');
-            if (isOpen) {
-              sidebar.classList.remove('mobile-open');
-              main.classList.remove('mobile-sidebar-open');
-            } else {
-              sidebar.classList.add('mobile-open');
-              main.classList.add('mobile-sidebar-open');
+      {/* Mobile Menu Button for Dashboard - render only on mobile */}
+      {isMobile && (
+        <button
+          className="dashboard-mobile-menu-btn"
+          onClick={() => {
+            // Toggle mobile sidebar
+            const sidebar = document.querySelector('.exotic-sidebar');
+            const main = document.querySelector('.dashboard-main');
+            if (sidebar && main) {
+              const isOpen = sidebar.classList.contains('mobile-open');
+              if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                main.classList.remove('mobile-sidebar-open');
+              } else {
+                sidebar.classList.add('mobile-open');
+                main.classList.add('mobile-sidebar-open');
+              }
             }
-          }
-        }}
-        aria-label="Toggle dashboard menu"
-      >
-        <MenuOutlined />
-      </button>
+          }}
+          aria-label="Toggle dashboard menu"
+        >
+          <MenuOutlined />
+        </button>
+      )}
 
       <div className={`dashboard-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <DashboardSidebar
@@ -317,15 +393,33 @@ export default function Dashboard() {
                               // eslint-disable-next-line no-alert
                               const confirmed = window.confirm('Are you sure you want to delete this post?');
                               if (!confirmed) return;
+                              
+                              // Optimistically remove from UI immediately
+                              setPosts(prevPosts => prevPosts.filter(post => post._id !== item._id));
+                              
                               const url = `/api/posts/${item._id}?authorId=${encodeURIComponent(authorKey)}${authorDisplayName ? `&authorName=${encodeURIComponent(authorDisplayName)}` : ''}`;
                               const res = await fetch(url, { method: 'DELETE' });
                               const data = await res.json();
-                              if (!res.ok || !data.success) throw new Error(data.message || 'Failed to delete');
-                              message.success('Post deleted');
-                              fetchPosts(query);
+                              
+                              if (!res.ok || !data.success) {
+                                // If delete failed, refresh to restore the post
+                                fetchPosts(query);
+                                throw new Error(data.message || 'Failed to delete');
+                              }
+                              
+                              message.success('Post deleted successfully');
+                              
+                              // Refresh posts list to ensure consistency with server
+                              // Use a small delay to ensure server has processed the deletion
+                              // Force refresh to bypass cache
+                              setTimeout(() => {
+                                fetchPosts(query, true);
+                              }, 300);
                             } catch (err) {
-                              console.error(err);
+                              console.error('Delete error:', err);
                               message.error(err.message || 'Delete failed');
+                              // Refresh to restore correct state
+                              fetchPosts(query);
                             }
                           }}>Delete</Button>
                         </div>
@@ -479,17 +573,16 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        {/* Create Blog Modal */}
-        <CreateBlogModal
-          open={open}
-          onClose={closeCreateModal}
-          onPublished={handlePublished}
-          authorName={user?.name || 'Anonymous'}
-          authorId={authorKey}
-        />
       </div>
     </div>
+    {/* Create Blog Modal */}
+    <CreateBlogModal
+      open={open}
+      onClose={closeCreateModal}
+      onPublished={handlePublished}
+      authorName={user?.name || 'Anonymous'}
+      authorId={authorKey}
+    />
     </>
   );
 }

@@ -3628,21 +3628,28 @@ body {
     visibility: hidden !important;
   }
 
-  /* Mobile Header - Hamburger button on TOP LEFT with proper margins */
+  /* Mobile Header - Hidden by default on desktop */
   .mobile-header {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 72px;
     background: transparent; /* Remove background completely */
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Hamburger on the LEFT */
-    padding: 0 20px 0 20px; /* Left padding for proper spacing from edge */
     z-index: 1000;
     margin: 0;
     safe-area-inset-top: env(safe-area-inset-top);
+  }
+
+  /* Show mobile header only on mobile devices */
+  @media (max-width: 768px) {
+    .mobile-header {
+      display: flex !important;
+      align-items: center;
+      justify-content: flex-start; /* Hamburger on the LEFT */
+      padding: 0 20px 0 20px; /* Left padding for proper spacing from edge */
+    }
   }
 
   /* Mobile menu button - positioned on right with perfect margins */
@@ -3764,8 +3771,11 @@ body {
     position: relative;
   }
 
-  /* Dashboard mobile menu button */
+  /* Dashboard mobile menu button - Hidden on desktop */
   .dashboard-mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
     position: fixed;
     top: 16px;
     right: 16px;
@@ -3777,13 +3787,33 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 20px;
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    pointer-events: none !important;
+  }
+
+  /* Explicitly hide on desktop (min-width: 769px) */
+  @media (min-width: 769px) {
+    .dashboard-mobile-menu-btn {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+
+  /* Show dashboard mobile menu button only on mobile devices */
+  @media (max-width: 768px) {
+    .dashboard-mobile-menu-btn {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .dashboard-mobile-menu-btn:hover {
@@ -6871,4 +6901,104 @@ nav.mobile-menu .mobile-menu-content .mobile-menu-footer > .mobile-theme-toggle 
       animation: none;
     }
   }
+
+  /* Dashboard sidebar mobile styles */
+  .exotic-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    z-index: 1001 !important;
+  }
+
+  .dashboard-main.mobile-sidebar-open {
+    margin-left: 320px !important;
+    width: calc(100% - 320px) !important;
+  }
+
+  /* Hide navbar on dashboard pages - Multiple selectors for maximum compatibility */
+.dashboard-container .glass-navbar,
+body:has(.dashboard-container) .glass-navbar,
+body.dashboard-page .glass-navbar,
+html:has(.dashboard-container) .glass-navbar,
+.dashboard-container ~ .glass-navbar,
+[class*="dashboard"] ~ .glass-navbar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* Also hide mobile header on dashboard pages - AGGRESSIVE HIDING */
+body:has(.dashboard-container) .mobile-header,
+.dashboard-container ~ .mobile-header,
+html:has(.dashboard-container) .mobile-header,
+[class*="dashboard"] ~ .mobile-header,
+.mobile-header:has(~ .dashboard-container),
+body:has([class*="dashboard"]) .mobile-header {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  overflow: hidden !important;
+}
+
+/* Mobile sidebar logout button visibility and scrolling */
+@media (max-width: 768px) {
+  .exotic-sidebar {
+    overflow-y: auto !important; /* Enable scrolling */
+    overflow-x: hidden !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
+  }
+
+  .exotic-sidebar .ant-layout-sider-children {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .sidebar-actions {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: linear-gradient(180deg, transparent 0%, #0a0a0a 20%, #0a0a0a 100%) !important;
+    padding: 1rem 1.5rem 2rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    margin-top: auto !important; /* Push to bottom */
+    z-index: 10 !important;
+  }
+
+  .logout-btn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    min-height: 48px !important; /* Touch-friendly size */
+  }
+
+  /* Ensure all sidebar sections are visible and scrollable */
+  .sidebar-brand-section,
+  .sidebar-user-section,
+  .sidebar-nav,
+  .sidebar-theme {
+    flex-shrink: 0 !important;
+  }
+}
 }

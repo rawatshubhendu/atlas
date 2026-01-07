@@ -37,14 +37,92 @@ const { Title, Text } = Typography;
 const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublished, authorName = "Anonymous", authorId }) {
   const [form] = Form.useForm();
   const [editorHTML, setEditorHTML] = useState("");
+  const [editorInstance, setEditorInstance] = useState(null); // Store editor instance reference
   const [coverImage, setCoverImage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
 
-  const textContent = useMemo(() => editorHTML.replace(/<[^>]*>/g, "").trim(), [editorHTML]);
-  const canPublish = useMemo(() => Boolean(title && textContent), [title, textContent]);
+  // Extract text content from HTML - more robust extraction
+  const extractTextContent = useCallback((html) => {
+    if (!html) return '';
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      // Get text content
+      let text = (tempDiv.textContent || tempDiv.innerText || '').trim();
+      // Remove multiple spaces/newlines, replace with single space
+      text = text.replace(/\s+/g, ' ').trim();
+      return text;
+    } catch (e) {
+      // Fallback: regex-based extraction
+      return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    }
+  }, []);
+
+  const textContent = useMemo(() => {
+    return extractTextContent(editorHTML);
+  }, [editorHTML, extractTextContent]);
+
+  // Get actual text content directly from editor if available (most reliable)
+  const getEditorTextContent = useCallback(() => {
+    if (editorInstance) {
+      try {
+        // Use TipTap's built-in method to get text content
+        const text = editorInstance.getText();
+        return text.trim();
+      } catch (e) {
+        // Fallback to HTML extraction
+        return extractTextContent(editorHTML);
+      }
+    }
+    return extractTextContent(editorHTML);
+  }, [editorInstance, editorHTML, extractTextContent]);
+
+  const canPublish = useMemo(() => {
+    const hasTitle = title && title.trim().length > 0;
+    
+    // Get text content - prefer editor instance, fallback to HTML extraction
+    let actualTextContent = '';
+    if (editorInstance) {
+      try {
+        actualTextContent = editorInstance.getText().trim();
+      } catch (e) {
+        // Fallback to extracted text content
+        actualTextContent = textContent || '';
+      }
+    } else {
+      // Use extracted text content from HTML
+      actualTextContent = textContent || '';
+    }
+    
+    // Additional check: ensure HTML has substantial content (not just empty tags)
+    // Remove all HTML tags and check for actual text
+    const htmlWithoutTags = editorHTML ? editorHTML.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim() : '';
+    
+    // Content is valid if there's actual text (at least 3 characters)
+    // Check both editor text and HTML text to be thorough
+    const hasContent = actualTextContent.length >= 3 || htmlWithoutTags.length >= 3;
+    
+    return Boolean(hasTitle && hasContent);
+  }, [title, textContent, editorHTML, editorInstance]);
+
+  // Debug effect for development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      const editorText = editorInstance ? editorInstance.getText().trim() : 'N/A';
+      console.log('Editor state updated:', {
+        editorHTML: editorHTML?.length,
+        textContent: textContent?.length,
+        editorText: editorText?.length,
+        editorTextValue: editorText.substring(0, 50),
+        hasContent: textContent && textContent.length >= 3,
+        canPublish,
+        editorInstanceAvailable: !!editorInstance
+      });
+    }
+  }, [editorHTML, textContent, canPublish, editorInstance]);
 
   const beforeUpload = async (file) => {
     const isImage = file.type.startsWith('image/');
@@ -88,19 +166,91 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
 
   const handleOk = useCallback(async () => {
     try {
+      // CRITICAL: Get fresh content directly from editor instance FIRST
+      let actualTextContent = '';
+      let currentHTML = '';
+      
+      // Always try to get content from editor instance first (most reliable)
+      if (editorInstance) {
+        try {
+          // Get fresh text content directly from editor
+          actualTextContent = editorInstance.getText().trim();
+          currentHTML = editorInstance.getHTML();
+          
+          // If editor instance exists but returns empty, wait a tick and try again
+          if (!actualTextContent && !currentHTML) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            actualTextContent = editorInstance.getText().trim();
+            currentHTML = editorInstance.getHTML();
+          }
+        } catch (e) {
+          console.error('Error getting content from editor instance:', e);
+          // Fallback to state
+          actualTextContent = textContent || '';
+          currentHTML = editorHTML || '';
+        }
+      } else {
+        // Fallback if editor instance not available
+        actualTextContent = textContent || '';
+        currentHTML = editorHTML || '';
+      }
+      
+      // Extract text from HTML as additional check
+      const htmlWithoutTags = currentHTML ? currentHTML.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim() : '';
+      
+      // Content validation - check both editor text and HTML text
+      // At least 3 characters of actual text content
+      const hasContent = actualTextContent.length >= 3 || htmlWithoutTags.length >= 3;
+      
+      // Title validation
+      const hasTitle = title && title.trim().length > 0;
+
+      // Sync form field so antd validation sees latest content
+      form.setFieldsValue({ content: currentHTML || editorHTML || '' });
+
+      // Validate form (title rules etc.)
       const values = await form.validateFields();
-      if (!textContent) {
-        form.setFields([{ name: "content", errors: ["Please write your content"] }]);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Blog validation (FINAL CHECK):', {
+          title: title?.length,
+          titleValue: title,
+          editorHTML: currentHTML?.length,
+          editorHTMLPreview: currentHTML?.substring(0, 200),
+          editorText: actualTextContent,
+          editorTextLength: actualTextContent.length,
+          htmlWithoutTags: htmlWithoutTags,
+          htmlWithoutTagsLength: htmlWithoutTags.length,
+          hasTitle,
+          hasContent,
+          editorInstanceAvailable: !!editorInstance,
+          willPublish: hasTitle && hasContent
+        });
+      }
+
+      if (!hasTitle) {
+        form.setFields([{ name: "title", errors: ["Please enter a title"] }]);
+        message.error("Please enter a title");
         return;
       }
+
+      if (!hasContent) {
+        form.setFields([{ name: "content", errors: ["Please write your content (at least 3 characters)"] }]);
+        message.error(`Please write your content (at least 3 characters). Current length: ${actualTextContent.length || htmlWithoutTags.length}`);
+        return;
+      }
+
       setSubmitting(true);
-      form.setFieldsValue({ content: editorHTML });
+      
+      const finalContent = currentHTML || editorHTML || '';
+      form.setFieldsValue({ content: finalContent });
+      
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: values.title,
-          content: editorHTML,
+          content: finalContent,
           coverImage,
           tags: tags,
           authorName,
@@ -117,14 +267,16 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
     } finally {
       setSubmitting(false);
     }
-  }, [form, textContent, editorHTML, coverImage, tags, authorName, authorId, onPublished]);
+  }, [form, textContent, editorHTML, editorInstance, coverImage, tags, authorName, authorId, onPublished, title]);
 
   const resetState = () => {
     form.resetFields();
     setEditorHTML("");
+    setEditorInstance(null);
     setCoverImage("");
     setTags([]);
     setCurrentTag("");
+    setTitle("");
   };
 
   const addTag = () => {
@@ -162,6 +314,7 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
       centered
       destroyOnHidden
       forceRender
+      okText="Publish"
       okButtonProps={{ 
         disabled: !canPublish,
         size: "large",
@@ -269,7 +422,28 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
               rules={[{ required: true, message: "Please write your content" }]}
             >
               <div className="editor-container">
-                <TipTapEditor value={editorHTML} onChange={setEditorHTML} />
+                <TipTapEditor 
+                  value={editorHTML} 
+                  onChange={(html) => {
+                    setEditorHTML(html);
+                    // Force form validation update
+                    form.setFieldsValue({ content: html });
+                    // Also update canPublish state
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Editor onChange:', { htmlLength: html?.length, htmlPreview: html?.substring(0, 100) });
+                    }
+                  }}
+                  onEditorReady={(editor) => {
+                    // Store editor instance reference for direct access
+                    setEditorInstance(editor);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Editor instance ready:', { 
+                        hasEditor: !!editor,
+                        initialText: editor?.getText()?.trim()?.substring(0, 50)
+                      });
+                    }
+                  }}
+                />
               </div>
             </Form.Item>
             <div className="editor-hint">

@@ -4,7 +4,6 @@ import React, { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { Button, Space, Upload, Tooltip, Divider, Input, Popover } from "antd";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
@@ -21,7 +20,7 @@ import {
 } from "@ant-design/icons";
 
 // Memoize the component to prevent unnecessary re-renders
-const TipTapEditor = memo(function TipTapEditor({ value = "", onChange = () => {} }) {
+const TipTapEditor = memo(function TipTapEditor({ value = "", onChange = () => {}, onEditorReady = () => {} }) {
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [imgOpen, setImgOpen] = useState(false);
@@ -29,6 +28,7 @@ const TipTapEditor = memo(function TipTapEditor({ value = "", onChange = () => {
 
   // Memoize extensions to prevent recreation
   const extensions = useMemo(() => [
+    // Use StarterKit's built-in Link to avoid duplicate extension warnings
     StarterKit.configure({
       heading: { levels: [1, 2, 3] },
       bulletList: {},
@@ -41,15 +41,7 @@ const TipTapEditor = memo(function TipTapEditor({ value = "", onChange = () => {
       strike: {},
       bold: {},
       italic: {},
-    }),
-    Link.configure({
-      openOnClick: true,
-      autolink: true,
-      defaultProtocol: "https",
-      protocols: ["http", "https"],
-      HTMLAttributes: {
-        class: "editor-link",
-      },
+      link: true, // keep default Link from StarterKit (single source)
     }),
     Image.configure({
       inline: false,
@@ -96,7 +88,11 @@ const TipTapEditor = memo(function TipTapEditor({ value = "", onChange = () => {
       }
     },
     onCreate: ({ editor }) => {
-      // Editor is ready - only log in development
+      // Editor is ready - notify parent component
+      if (onEditorReady) {
+        onEditorReady(editor);
+      }
+      // Only log in development
       if (process.env.NODE_ENV === 'development') {
         console.log("Editor created");
       }
