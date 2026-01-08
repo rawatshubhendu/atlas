@@ -109,7 +109,14 @@ export default function Dashboard() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(max-width: 768px)');
-    const update = () => setIsMobile(mq.matches);
+    const update = () => {
+      const matches = mq.matches;
+      setIsMobile(matches);
+      // Debug log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Mobile state updated:', matches, 'Window width:', window.innerWidth);
+      }
+    };
     update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);

@@ -113,6 +113,7 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
     if (process.env.NODE_ENV === 'development') {
       const editorText = editorInstance ? editorInstance.getText().trim() : 'N/A';
       console.log('Editor state updated:', {
+        title: title?.length,
         editorHTML: editorHTML?.length,
         textContent: textContent?.length,
         editorText: editorText?.length,
@@ -122,7 +123,7 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
         editorInstanceAvailable: !!editorInstance
       });
     }
-  }, [editorHTML, textContent, canPublish, editorInstance]);
+  }, [editorHTML, textContent, canPublish, editorInstance, title]);
 
   const beforeUpload = async (file) => {
     const isImage = file.type.startsWith('image/');

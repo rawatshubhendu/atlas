@@ -2874,6 +2874,9 @@ body {
   top: 0 !important;
   height: 100vh !important;
   z-index: 100 !important;
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  overflow-x: hidden !important; /* Prevent horizontal scroll */
+  -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
 }
 
 .exotic-sidebar::before {
@@ -3801,6 +3804,21 @@ body {
       visibility: hidden !important;
       opacity: 0 !important;
       pointer-events: none !important;
+      position: absolute !important;
+      left: -9999px !important;
+      top: -9999px !important;
+    }
+  }
+
+  /* Show dashboard mobile menu button only on mobile devices */
+  @media (max-width: 768px) {
+    .dashboard-mobile-menu-btn {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      align-items: center;
+      justify-content: center;
     }
   }
 
