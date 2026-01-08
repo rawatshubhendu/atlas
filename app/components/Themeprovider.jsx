@@ -33,17 +33,17 @@ export default function ThemeProvider({ children }) {
   useEffect(() => {
     // Prevent hydration mismatch by only running on client
     const initializeTheme = () => {
-      try {
-        const saved = localStorage.getItem("atlas-theme");
-        if (saved === "light" || saved === "dark") {
-          setTheme(saved);
-        }
+    try {
+      const saved = localStorage.getItem("atlas-theme");
+      if (saved === "light" || saved === "dark") {
+        setTheme(saved);
+      }
         // Always ensure document has the correct theme
         document.documentElement.setAttribute("data-theme", saved || "dark");
-      } catch (e) {
-        // Fallback to dark if localStorage fails
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
+    } catch (e) {
+      // Fallback to dark if localStorage fails
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
       setIsHydrated(true);
     };
 
@@ -53,8 +53,8 @@ export default function ThemeProvider({ children }) {
   // Whenever theme changes, persist and apply to document
   useEffect(() => {
     if (isHydrated) {
-      try { localStorage.setItem("atlas-theme", theme); } catch (e) {}
-      document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem("atlas-theme", theme); } catch (e) {}
+    document.documentElement.setAttribute("data-theme", theme);
     }
   }, [theme, isHydrated]);
 
