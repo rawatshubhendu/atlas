@@ -89,6 +89,7 @@ export default function DashboardSidebar({ user, onLogout, onCollapse, currentVi
         zIndex: 100,
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
+      suppressHydrationWarning
     >
       {/* Collapse Button */}
       <div className="sidebar-toggle">

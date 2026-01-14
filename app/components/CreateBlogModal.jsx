@@ -260,11 +260,16 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Failed to publish");
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to publish");
+      }
+      message.success('Blog published successfully!');
+      resetState();
       onPublished?.(data.post);
     } catch (e) {
       if (e?.errorFields) return;
-      console.error(e);
+      console.error('Publish error:', e);
+      message.error(e.message || "Failed to publish blog. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -298,12 +303,25 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
     }
   };
 
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!open) {
+      // Small delay to ensure modal is fully closed before resetting
+      const timer = setTimeout(() => {
+        resetState();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   return (
     <Modal
       title={null}
       open={open}
       onOk={handleOk}
-      onCancel={() => { resetState(); onClose?.(); }}
+      onCancel={() => { 
+        onClose?.(); 
+      }}
       maskClosable={false}
       keyboard={false}
       className="premium-blog-modal"
@@ -313,17 +331,19 @@ const CreateBlogModal = memo(function CreateBlogModal({ open, onClose, onPublish
         body: { maxHeight: 'calc(90vh - 110px)', overflow: 'auto' }
       }}
       centered
-      destroyOnHidden
-      forceRender
+      destroyOnClose
       okText="Publish"
       okButtonProps={{ 
-        disabled: !canPublish,
+        disabled: !canPublish || submitting,
         size: "large",
         type: "primary",
         className: "publish-button",
         loading: submitting
       }}
-      cancelButtonProps={{ size: "large" }}
+      cancelButtonProps={{ size: "large", disabled: submitting }}
+      afterClose={() => {
+        resetState();
+      }}
     >
       <div className="premium-modal-content">
         {/* Minimalist Header */}

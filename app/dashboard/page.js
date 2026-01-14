@@ -160,8 +160,23 @@ export default function Dashboard() {
   };
 
   const handleLogout = async () => {
-    message.success("Logged out successfully");
-    router.push('/');
+    try {
+      await signOut();
+      // Clear any dashboard-specific state
+      setUser(null);
+      setOpen(false);
+      // Small delay to ensure cleanup completes
+      setTimeout(() => {
+        // Force a hard navigation to clear all state and prevent scroll issues
+        window.location.replace('/');
+      }, 100);
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect even if signOut fails
+      setTimeout(() => {
+        window.location.replace('/');
+      }, 100);
+    }
   };
 
   const openCreateModal = () => {
@@ -211,7 +226,20 @@ export default function Dashboard() {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: 'var(--bg)',
+        width: '100%'
+      }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -240,7 +268,7 @@ export default function Dashboard() {
         </button>
       )}
 
-      <div className={`dashboard-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
+      <div className={`dashboard-container ${sidebarCollapsed ? 'collapsed' : ''}`} style={{ width: '100%', minHeight: '100vh' }}>
         <DashboardSidebar
           user={user}
           onLogout={handleLogout}
@@ -249,44 +277,44 @@ export default function Dashboard() {
           onViewChange={handleViewChange}
         />
 
-        <div className={`dashboard-main ${sidebarCollapsed ? 'collapsed' : ''}`} style={{ marginTop: 0 }}>
-        {/* Header Section */}
-        <div className="dashboard-header">
-          <div className="header-left">
-            <Typography.Title level={1} className="page-title">
-              {currentView === 'dashboard' ? 'Dashboard' : currentView === 'posts' ? 'Posts' : 'User Settings'}
-            </Typography.Title>
-          </div>
-          <div className="header-right">
-            <div className="user-profile">
-              <Avatar size={40} style={{ backgroundColor: 'var(--accent)' }} src={user?.avatar}>
-                {user?.name?.charAt(0) || 'U'}
-              </Avatar>
-              <div className="user-info">
-                <Typography.Text strong className="user-name">{user?.name || 'User'}</Typography.Text>
+        <div className={`dashboard-main ${sidebarCollapsed ? 'collapsed' : ''}`} style={{ marginTop: 0, width: '100%', flex: 1 }}>
+          {/* Header Section */}
+          <div className="dashboard-header">
+            <div className="header-left">
+              <Typography.Title level={1} className="page-title">
+                {currentView === 'dashboard' ? 'Dashboard' : currentView === 'posts' ? 'Posts' : 'User Settings'}
+              </Typography.Title>
+            </div>
+            <div className="header-right">
+              <div className="user-profile">
+                <Avatar size={40} style={{ backgroundColor: 'var(--accent)' }} src={user?.avatar}>
+                  {user?.name?.charAt(0) || 'U'}
+                </Avatar>
+                <div className="user-info">
+                  <Typography.Text strong className="user-name">{user?.name || 'User'}</Typography.Text>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Content based on current view */}
-        {currentView === 'dashboard' ? (
-          /* Welcome Section Only (Centered) */
-        <div className="dashboard-center">
-          <div className="welcome-section welcome-compact">
-            <Typography.Title level={2} className="welcome-title">
-              Welcome to your workspace
-            </Typography.Title>
-            <Typography.Paragraph className="welcome-description">
-              Start creating amazing content and manage your projects from here.
-            </Typography.Paragraph>
-            <div className="welcome-actions">
-              <Button type="primary" size="large" className="premium-button" onClick={openCreateModal}>
-                Create Blog
-              </Button>
+          {/* Content based on current view */}
+          {currentView === 'dashboard' ? (
+            /* Welcome Section Only (Centered) */
+            <div className="dashboard-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: 'calc(100vh - 200px)' }}>
+              <div className="welcome-section welcome-compact" style={{ display: 'block', visibility: 'visible', opacity: 1 }}>
+                <Typography.Title level={2} className="welcome-title">
+                  Welcome to your workspace
+                </Typography.Title>
+                <Typography.Paragraph className="welcome-description">
+                  Start creating amazing content and manage your projects from here.
+                </Typography.Paragraph>
+                <div className="welcome-actions">
+                  <Button type="primary" size="large" className="premium-button" onClick={openCreateModal}>
+                    Create Blog
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
         ) : currentView === 'posts' ? (
           /* Posts View */
           <div className="posts-view">
@@ -579,17 +607,17 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-    {/* Create Blog Modal */}
-    <CreateBlogModal
-      open={open}
-      onClose={closeCreateModal}
-      onPublished={handlePublished}
-      authorName={user?.name || 'Anonymous'}
-      authorId={authorKey}
-    />
+      {/* Create Blog Modal */}
+      <CreateBlogModal
+        open={open}
+        onClose={closeCreateModal}
+        onPublished={handlePublished}
+        authorName={user?.name || 'Anonymous'}
+        authorId={authorKey}
+      />
     </>
   );
 }

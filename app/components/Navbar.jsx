@@ -56,26 +56,25 @@ const NavBar = () => {
   const isActive = (path) => pathname === path;
   const isDashboard = pathname === '/dashboard' || pathname?.startsWith('/dashboard');
 
-  if (!isMounted) {
-    // Don't render placeholder on dashboard
-    if (isDashboard) return null;
-    return (
-      <div
-        className="navbar-placeholder"
-        style={{ height: "64px", background: "transparent" }}
-      />
-    );
-  }
-
   // CRITICAL: Don't render ANY navbar components on dashboard pages
   if (isDashboard) {
     return null;
   }
 
+  if (!isMounted) {
+    return (
+      <div
+        className="navbar-placeholder"
+        style={{ height: "64px", background: "transparent" }}
+        suppressHydrationWarning
+      />
+    );
+  }
+
   return (
     <>
       {/* Mobile Header - Only render on mobile devices */}
-      <div className="mobile-header">
+      <div className="mobile-header" suppressHydrationWarning>
         <button
           className="mobile-menu-button"
           onClick={toggleMobileMenu}
@@ -89,10 +88,11 @@ const NavBar = () => {
       <div
         className={`mobile-menu-overlay ${mobileMenuOpen ? 'open' : ''}`}
         onClick={closeMobileMenu}
+        suppressHydrationWarning
       />
 
       {/* Mobile Menu */}
-      <nav className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+      <nav className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`} suppressHydrationWarning>
         <button
           className="mobile-menu-close"
           onClick={closeMobileMenu}
@@ -151,7 +151,7 @@ const NavBar = () => {
       </nav>
 
       {/* Desktop Navbar */}
-      <header className={`glass-navbar ${isScrolled ? "scrolled" : ""}`}>
+      <header className={`glass-navbar ${isScrolled ? "scrolled" : ""}`} suppressHydrationWarning>
         <div className="nav-container">
           <Link href="/" className="nav-brand">
             Atlas

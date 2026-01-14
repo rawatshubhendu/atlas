@@ -646,10 +646,12 @@ html, body, #__next {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
@@ -661,6 +663,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 200ms ease, color 200ms ease;
+  min-height: 100vh;
+  height: auto;
 }
 
 /* Layout components */
@@ -859,13 +863,14 @@ body {
 /* Dashboard - Premium Dark Layout */
 .dashboard-container {
   min-height: 100vh;
-  background: #0f0f0f;
+  background: var(--bg);
   padding: 0;
   position: relative;
   display: block;
   width: 100%;
   overflow-x: hidden;
   padding-left: 280px; /* align content to right of fixed sidebar */
+  box-sizing: border-box;
 }
 
 .dashboard-main {
@@ -878,6 +883,8 @@ body {
   width: 100%;
   box-sizing: border-box;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-container.collapsed {
@@ -2215,11 +2222,13 @@ body {
 
 .dashboard-center {
   flex: 1;
-  display: flex;
+  display: flex !important;
   align-items: center;   /* vertical center */
   justify-content: center; /* horizontal center */
   width: 100%;
   min-height: calc(100vh - 200px); /* Account for header */
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Welcome Section */
@@ -2231,7 +2240,9 @@ body {
   backdrop-filter: blur(10px);
   width: 100%;
   margin: 0;
-  display: block;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   max-width: 100%;
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   position: relative;
@@ -3962,6 +3973,8 @@ body {
   position: relative;
   overflow: hidden;
   background: var(--bg);
+  height: 100vh;
+  max-height: 100vh;
 }
 
 .home-layout::before {
@@ -4071,20 +4084,60 @@ body {
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Hero button styling - ensure proper sizing */
+.hero-actions .ant-btn,
+.hero-btn-primary,
+.hero-btn-default {
+  min-width: 160px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 12px 32px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.hero-actions .ant-btn-primary,
+.hero-btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, #059669 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.hero-actions .ant-btn-primary:hover,
+.hero-btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4) !important;
 }
 
 /* Explore Blogs button styling */
-.hero-actions .ant-btn-default {
+.hero-actions .ant-btn-default,
+.hero-btn-default {
   border: 1px solid var(--border) !important;
+  background: transparent !important;
+  color: var(--text) !important;
 }
 
-:root[data-theme="light"] .hero-actions .ant-btn-default {
+.hero-actions .ant-btn-default:hover,
+.hero-btn-default:hover {
+  border-color: var(--accent) !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: var(--accent) !important;
+  transform: translateY(-2px) !important;
+}
+
+:root[data-theme="light"] .hero-actions .ant-btn-default,
+:root[data-theme="light"] .hero-btn-default {
   border: 2px solid #0f172a !important;
   color: #0f172a !important;
   background: transparent !important;
 }
 
-:root[data-theme="light"] .hero-actions .ant-btn-default:hover {
+:root[data-theme="light"] .hero-actions .ant-btn-default:hover,
+:root[data-theme="light"] .hero-btn-default:hover {
   border-color: #0f172a !important;
   background: rgba(15, 23, 42, 0.05) !important;
   color: #0f172a !important;

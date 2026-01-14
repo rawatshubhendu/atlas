@@ -9,6 +9,7 @@ try {
 }
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { ConfigProvider } from "antd";
 
 const ThemeContext = createContext({
   theme: "dark",
@@ -20,10 +21,11 @@ export function useTheme() {
 }
 
 /**
- * ThemeProvider
+ * ThemeProvider with Ant Design ConfigProvider
  * - default is "dark" (server layout set data-theme="dark")
  * - reads localStorage and applies saved theme
  * - provides theme and setTheme to children
+ * - wraps children with Ant Design ConfigProvider
  */
 export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("dark"); // Always start with dark
@@ -60,7 +62,19 @@ export default function ThemeProvider({ children }) {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#10b981",
+            borderRadius: 8,
+          },
+          cssVar: {
+            prefix: 'atlas',
+          },
+        }}
+      >
+        {children}
+      </ConfigProvider>
     </ThemeContext.Provider>
   );
 }

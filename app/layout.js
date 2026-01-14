@@ -1,6 +1,5 @@
 // app/layout.js  (server component)
 import "./globals.css";
-import ThemeProvider from "./components/Themeprovider.jsx";
 
 export const metadata = {
   title: "Atlas",
@@ -9,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -34,10 +33,8 @@ export default function RootLayout({ children }) {
         flexDirection: 'column',
         margin: 0,
         padding: 0
-      }}>
-        <ThemeProvider>
-            {children}
-        </ThemeProvider>
+      }} suppressHydrationWarning>
+        {children}
       </body>
     </html>
   );
